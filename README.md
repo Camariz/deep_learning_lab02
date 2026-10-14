@@ -2,7 +2,7 @@
 
 Nome: Carolline de Araújo Mariz
 Turma: Banco de Dados - 4º período. 
-Link do repositório: [preencher]
+Link do repositório: https://github.com/Camariz/deep_learning_lab02 
 
 Substitua os marcadores pelas suas medições e análises. Consulte ENUNCIADO.pdf para os requisitos integrais.
 
@@ -14,9 +14,28 @@ Ambiente de desenvolvimento: Visual Studio Code (VS Code), utilizando ambiente v
 Dispositivo: cpu
 Semente: 42
 
-Comando ou sequência para executar: [preencher].
+Comando ou sequência para executar:
 
-Modificações feitas em apoio.py: [declarar ou informar que não houve].
+- Clonar o repositório:
+
+git clone https://github.com/Camariz/deep_learning_lab02.git
+
+- Acessar a pasta do projeto:
+
+cd deep_learning_lab02
+
+- Criar e ativar um ambiente virtual Python:
+
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+- Instalar as dependências:
+
+python -m pip install -r requirements.txt
+
+- Abrir a pasta no VS Code, acessar lab02.ipynb, selecionar o interpretador Python do ambiente .venv como kernel e executar todas as células em sequência, utilizando Run All.
+
+Modificações feitas em apoio.py: Não foram realizadas modificações no arquivo apoio.py. As implementações necessárias para substituir os trechos TODO foram desenvolvidas diretamente no notebook lab02.ipynb, utilizando as funções auxiliares disponibilizadas originalmente.
 
 ## Base e definição do alvo
 
@@ -59,7 +78,7 @@ Pergunta de uso e estratégia: O objetivo é classificar observações de vinho 
 Cobertura e interseções de índices/perfis: A auditoria confirmou a preservação das 1.599 observações, sem sobreposição de identificadores ou perfis entre quaisquer pares de partições (todas as interseções iguais a zero). Ambas as classes estiveram presentes nos três conjuntos. Observou-se menor proporção de positivos na validação (10,38%), decorrente da separação por grupos sem estratificação de classes. Apesar de reduzir a repetição de perfis entre conjuntos, essa estratégia não garante independência entre vinhos físicos nem generalização para períodos ou produtores não representados nos dados.
 
 ## A1 — Dataset
-Formas, tipos, estatísticas e verificação: [preencher].
+Formas, tipos, estatísticas e verificação:
 
 Foi implementada a classe `MeuDataset`, derivada de `torch.utils.data.Dataset`, com os métodos `__init__`, `__len__` e `__getitem__`, responsáveis pela preparação, dimensionamento e recuperação das observações. A padronização das 11 características foi realizada utilizando exclusivamente a média e o desvio-padrão do conjunto de treino, com a convenção populacional (`ddof=0`) e tratamento de desvios nulos para evitar divisão por zero . As estatísticas calculadas no treinamento foram reutilizadas integralmente na validação e no teste, evitando vazamento de informações durante o pré-processamento. A implementação preservou 961 observações no treino, 318 na validação e 320 no teste. As verificações confirmaram características individuais com dimensão `[11]` e rótulos escalares, ambos do tipo `float32`. Nos lotes de 32 observações, foram obtidas as dimensões `[32, 11]` para as características e `[32]` para os rótulos. Não foram identificados valores NaN ou infinitos em nenhuma partição. A equivalência das médias e dos desvios utilizados nos três conjuntos foi confirmada numericamente. As médias das características padronizadas no treino ficaram aproximadamente iguais a zero, conforme esperado. Esses resultados demonstram a consistência da preparação dos dados e a preservação da separação entre treinamento e avaliação.
 
@@ -99,7 +118,6 @@ Figura 1 — Tempo mediano de treinamento por época em função do tamanho do l
 Fonte: elaboração própria, a partir das medições realizadas em CPU.
 
 ## A4 — BatchNorm
-Condição do erro, mensagem capturada, correção e consequência: [preencher].
 
 Condição do erro: Foi utilizado um subconjunto de 65 observações, extraídas exclusivamente do conjunto de treinamento, com tamanho de lote igual a 64 e uma rede neural contendo `BatchNorm1d` em modo de treinamento. Como o resto da divisão foi igual a 1, o último lote apresentou apenas uma observação, impossibilitando o cálculo adequado das estatísticas necessárias à normalização.
 
@@ -204,7 +222,7 @@ Figura 3 — Curvas ROC e Precisão-Revocação do classificador no conjunto de 
 Fonte: elaboração própria, a partir dos resultados experimentais obtidos no conjunto de teste.
 
 ## D8 — Recomendação
-## D8 — Recomendação
+
 
 Recomenda-se utilizar a rede neural com limiar de decisão de 0,276928 como ferramenta de apoio à identificação de vinhos de alta qualidade (nota ≥ 7), especialmente em situações nas quais deixar de identificar um vinho positivo representa um custo maior do que selecionar indevidamente uma amostra negativa. Essa recomendação baseia-se na avaliação final realizada em 320 observações do conjunto de teste, com 45 casos positivos (14,06%). O modelo apresentou AUC-ROC de 0,8816, AUC-PR trapezoidal de 0,5562, revocação de 60,00% e F1 de 0,5192 com o limiar escolhido. Considerando os custos hipotéticos previamente definidos (C_FP = 2 e C_FN = 5), o custo total foi de 154 unidades, equivalente a 0,48125 por observação, inferior às 176 unidades obtidas com o limiar padrão de 0,5 e às 225 unidades do classificador trivial. Entretanto, o aumento dos falsos positivos de 8 para 32 evidencia a necessidade de avaliar os recursos disponíveis para verificar as amostras selecionadas. Além disso, o modelo deixou de identificar 18 dos 45 casos positivos, demonstrando que ainda existe risco de decisões incorretas. Os custos utilizados são ilustrativos e não representam valores econômicos efetivamente mensurados. Assim, recomenda-se a utilização do modelo apenas como apoio à decisão, acompanhada de validação adicional, monitoramento e avaliação dos custos reais antes de uma eventual aplicação operacional. Os resultados apresentados são restritos ao conjunto de teste avaliado e não permitem afirmar desempenho equivalente em outros produtores, regiões, períodos ou populações não observadas.
 
